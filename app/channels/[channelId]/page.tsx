@@ -1,5 +1,13 @@
+"use client";
+
+import CanvasContainer from "@/src/shared/components/canvas-container";
+
 const ChannelPage = ({ params }: { params: { channelId: string } }) => {
-  return <section>{params.channelId}</section>;
+  return (
+    <section className="flex h-screen">
+      <CanvasContainer />
+    </section>
+  );
 };
 
 export default ChannelPage;
