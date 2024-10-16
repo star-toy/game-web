@@ -5,8 +5,13 @@ import { RefObject, useEffect, useRef } from "react";
 import { useClientWidthHeight } from "../hooks/use-client-width-height";
 
 import CanvasService from "@/src/entities/canvas-service";
+import { Board } from "@/src/entities/puzzle-board";
 
-const CanvasContainer = () => {
+interface Props {
+  board: Board;
+}
+
+const CanvasContainer = ({ board }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef: RefObject<HTMLCanvasElement> =
     useRef<HTMLCanvasElement>(null);
@@ -16,8 +21,21 @@ const CanvasContainer = () => {
 
   useEffect(() => {
     if (canvasRef.current) {
-      canvasServiceRef.current = new CanvasService(canvasRef.current);
+      canvasServiceRef.current = new CanvasService(canvasRef.current, board);
       canvasServiceRef.current.resize(width, height);
+
+      let requestId: number;
+      const requestAnimation = () => {
+        requestId = window.requestAnimationFrame(requestAnimation);
+
+        canvasServiceRef.current?.render();
+      };
+
+      requestAnimation();
+
+      return () => {
+        window.cancelAnimationFrame(requestId);
+      };
     }
   }, [canvasRef.current]);
 

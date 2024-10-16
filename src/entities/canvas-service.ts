@@ -1,7 +1,12 @@
+import { Board } from "./puzzle-board";
+
 class CanvasService {
   private ctx: CanvasRenderingContext2D;
 
-  constructor(private readonly canvas: HTMLCanvasElement) {
+  constructor(
+    private readonly canvas: HTMLCanvasElement,
+    private readonly board: Board
+  ) {
     const ctx = canvas.getContext("2d");
 
     if (!ctx) {
@@ -9,6 +14,11 @@ class CanvasService {
     }
 
     this.ctx = ctx;
+  }
+
+  public render() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.board.draw(this.ctx);
   }
 
   public resize(width: number, height: number) {
