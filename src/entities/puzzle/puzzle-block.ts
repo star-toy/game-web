@@ -6,12 +6,12 @@ class Block {
     private height: number
   ) {}
 
-  get position() {
+  get area() {
     return [this.x, this.y, this.width, this.height] as const;
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillRect(...this.position);
+    ctx.fillRect(...this.area);
   }
 
   public move(x: number, y: number) {
@@ -47,7 +47,7 @@ class ImageBlock extends Block {
 
   async draw(ctx: CanvasRenderingContext2D) {
     if (this.image) {
-      ctx.drawImage(this.image, ...this.position);
+      ctx.drawImage(this.image, ...this.area);
     }
   }
 }

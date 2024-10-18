@@ -1,4 +1,4 @@
-import { Block } from "./block";
+import { Block } from "./puzzle-block";
 
 interface Board {
   draw: (ctx: CanvasRenderingContext2D) => void;

@@ -1,4 +1,4 @@
-import { Board } from "./puzzle-board";
+import { Board } from "./puzzle/puzzle-board";
 
 class CanvasService {
   private ctx: CanvasRenderingContext2D;
