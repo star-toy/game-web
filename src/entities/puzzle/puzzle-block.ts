@@ -23,6 +23,15 @@ class Block {
     this.width = width;
     this.height = height;
   }
+
+  public includes(x: number, y: number) {
+    return (
+      this.x <= x &&
+      this.x + this.width >= x &&
+      this.y <= y &&
+      this.y + this.height >= y
+    );
+  }
 }
 
 class ImageBlock extends Block {

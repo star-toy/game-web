@@ -36,7 +36,15 @@ class IdleState extends State {
 
   public exit(args: any) {}
 
-  public handleMouseDown(event: MouseEvent) {}
+  public handleMouseDown(event: MouseEvent) {
+    const block = this.board.getBlockAtPosition(event.clientX, event.clientY);
+
+    if (block) {
+      this.board.selections.subscribe(block);
+    } else {
+      this.board.selections.clear();
+    }
+  }
 
   public handleMouseMove(event: MouseEvent) {}
 

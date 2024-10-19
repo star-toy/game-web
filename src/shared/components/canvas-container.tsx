@@ -22,6 +22,7 @@ const CanvasContainer = ({ board }: Props) => {
   useEffect(() => {
     if (canvasRef.current) {
       canvasServiceRef.current = new CanvasService(canvasRef.current, board);
+
       canvasServiceRef.current.resize(width, height);
 
       let requestId: number;
