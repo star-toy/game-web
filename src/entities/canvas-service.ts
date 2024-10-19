@@ -14,6 +14,8 @@ class CanvasService {
     }
 
     this.ctx = ctx;
+
+    this.listen();
   }
 
   public render() {
@@ -31,6 +33,18 @@ class CanvasService {
     this.canvas.height = Math.floor(height * devicePixelRatio);
 
     this.ctx.scale(devicePixelRatio, devicePixelRatio);
+  }
+
+  private listen() {
+    this.canvas.addEventListener("mousedown", (event) =>
+      this.board.handleMouseDown(event)
+    );
+    this.canvas.addEventListener("mousemove", (event) =>
+      this.board.handleMouseMove(event)
+    );
+    this.canvas.addEventListener("mouseup", (event) =>
+      this.board.handleMouseUp(event)
+    );
   }
 }
 
