@@ -1,11 +1,6 @@
 import { Block } from "./puzzle-block";
 
-interface Board {
-  draw: (ctx: CanvasRenderingContext2D) => void;
-  subscribe: (block: Block) => void;
-}
-
-class PuzzleBoard implements Board {
+class PuzzleBoard {
   public blocks: Block[] = [];
 
   public async draw(ctx: CanvasRenderingContext2D) {
@@ -19,4 +14,4 @@ class PuzzleBoard implements Board {
   }
 }
 
-export { type Board, PuzzleBoard };
+export default PuzzleBoard;

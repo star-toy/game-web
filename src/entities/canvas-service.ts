@@ -1,11 +1,11 @@
-import { Board } from "./puzzle/puzzle-board";
+import PuzzleBoard from "./puzzle/puzzle-board";
 
 class CanvasService {
   private ctx: CanvasRenderingContext2D;
 
   constructor(
     private readonly canvas: HTMLCanvasElement,
-    private readonly board: Board
+    private readonly board: PuzzleBoard
   ) {
     const ctx = canvas.getContext("2d");
 

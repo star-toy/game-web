@@ -5,10 +5,10 @@ import { RefObject, useEffect, useRef } from "react";
 import { useClientWidthHeight } from "../hooks/use-client-width-height";
 
 import CanvasService from "@/src/entities/canvas-service";
-import { Board } from "@/src/entities/puzzle/puzzle-board";
+import PuzzleBoard from "@/src/entities/puzzle/puzzle-board";
 
 interface Props {
-  board: Board;
+  board: PuzzleBoard;
 }
 
 const CanvasContainer = ({ board }: Props) => {
