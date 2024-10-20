@@ -13,6 +13,8 @@ class PuzzleBoard {
     }
 
     this.selections.draw(ctx);
+
+    this.states.current?.draw(ctx);
   }
 
   public subscribe(block: Block) {
