@@ -6,6 +6,11 @@ import {
 } from "@/src/shared/constants";
 import PuzzleBoard from "./puzzle-board";
 
+interface Point {
+  clientX: number;
+  clientY: number;
+}
+
 class BoardStates {
   constructor(private readonly board: PuzzleBoard) {}
 
@@ -37,6 +42,10 @@ interface State {
   handleMouseDown(event: MouseEvent): void;
   handleMouseMove(event: MouseEvent): void;
   handleMouseUp(event: MouseEvent): void;
+
+  handleTouchStart(event: TouchEvent): void;
+  handleTouchMove(event: TouchEvent): void;
+  handleTouchEnd(event: TouchEvent): void;
 }
 
 class IdleState implements State {
@@ -49,7 +58,25 @@ class IdleState implements State {
   public exit(args: any) {}
 
   public handleMouseDown(event: MouseEvent) {
-    const block = this.board.getBlockAtPosition(event.clientX, event.clientY);
+    this.startSelectionArea(event);
+  }
+
+  public handleTouchStart(event: TouchEvent) {
+    if (event.touches.length === 1) {
+      this.startSelectionArea(event.touches[0]);
+    } else {
+      // TODO: panning
+    }
+  }
+
+  public handleMouseMove(event: MouseEvent) {}
+  public handleTouchMove(event: TouchEvent) {}
+
+  public handleMouseUp(event: MouseEvent) {}
+  public handleTouchEnd(event: TouchEvent) {}
+
+  private startSelectionArea({ clientX, clientY }: Point) {
+    const block = this.board.getBlockAtPosition(clientX, clientY);
 
     if (block) {
       this.board.selections.subscribe(block);
@@ -58,19 +85,9 @@ class IdleState implements State {
     }
 
     this.board.states.push(
-      new MultipleSelectState(
-        this.board,
-        event.clientX,
-        event.clientY,
-        event.clientX,
-        event.clientY
-      )
+      new MultipleSelectState(this.board, clientX, clientY, clientX, clientY)
     );
   }
-
-  public handleMouseMove(event: MouseEvent) {}
-
-  public handleMouseUp(event: MouseEvent) {}
 }
 
 class MultipleSelectState implements State {
@@ -112,10 +129,20 @@ class MultipleSelectState implements State {
   public exit(args: any) {}
 
   public handleMouseDown(event: MouseEvent) {}
+  public handleTouchStart(event: TouchEvent) {}
 
   public handleMouseMove(event: MouseEvent) {
-    this.x = event.clientX;
-    this.y = event.clientY;
+    this.resizeSelectionArea(event);
+  }
+  public handleTouchMove(event: TouchEvent) {
+    if (event.touches.length === 1) {
+      this.resizeSelectionArea(event.touches[0]);
+    }
+  }
+
+  private resizeSelectionArea({ clientX, clientY }: Point) {
+    this.x = clientX;
+    this.y = clientY;
 
     this.board.selections.clear();
 
@@ -131,6 +158,9 @@ class MultipleSelectState implements State {
   }
 
   public handleMouseUp(event: MouseEvent) {
+    this.board.states.pop();
+  }
+  public handleTouchEnd(event: TouchEvent) {
     this.board.states.pop();
   }
 }

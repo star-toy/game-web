@@ -34,6 +34,15 @@ class PuzzleBoard {
   public handleMouseUp = (event: MouseEvent) => {
     this.states.current?.handleMouseUp(event);
   };
+  public handleTouchStart = (event: TouchEvent) => {
+    this.states.current?.handleTouchStart(event);
+  };
+  public handleTouchMove = (event: TouchEvent) => {
+    this.states.current?.handleTouchMove(event);
+  };
+  public handleTouchEnd = (event: TouchEvent) => {
+    this.states.current?.handleTouchEnd(event);
+  };
 }
 
 export default PuzzleBoard;

@@ -38,12 +38,20 @@ class CanvasService {
     this.canvas.addEventListener("mousedown", this.board.handleMouseDown);
     this.canvas.addEventListener("mousemove", this.board.handleMouseMove);
     this.canvas.addEventListener("mouseup", this.board.handleMouseUp);
+
+    this.canvas.addEventListener("touchstart", this.board.handleTouchStart);
+    this.canvas.addEventListener("touchmove", this.board.handleTouchMove);
+    this.canvas.addEventListener("touchend", this.board.handleTouchEnd);
   }
 
   public detach() {
     this.canvas.removeEventListener("mousedown", this.board.handleMouseDown);
     this.canvas.removeEventListener("mousemove", this.board.handleMouseMove);
     this.canvas.removeEventListener("mouseup", this.board.handleMouseUp);
+
+    this.canvas.removeEventListener("touchstart", this.board.handleTouchStart);
+    this.canvas.removeEventListener("touchmove", this.board.handleTouchMove);
+    this.canvas.removeEventListener("touchend", this.board.handleTouchEnd);
   }
 }
 
