@@ -1,4 +1,9 @@
-import { SELECTION_COLOR, SELECTION_LINE_WIDTH } from "@/src/shared/constants";
+import {
+  SELECTION_COLOR,
+  SELECTION_FILL_COLOR,
+  SELECTION_LINE_WIDTH,
+  SELECTION_OPACITY,
+} from "@/src/shared/constants";
 import PuzzleBoard from "./puzzle-board";
 
 class BoardStates {
@@ -78,15 +83,28 @@ class MultipleSelectState implements State {
   ) {}
 
   public draw(ctx: CanvasRenderingContext2D) {
+    ctx.save();
+
+    ctx.beginPath();
+
+    ctx.fillStyle = SELECTION_FILL_COLOR;
     ctx.strokeStyle = SELECTION_COLOR;
     ctx.lineWidth = SELECTION_LINE_WIDTH;
+    ctx.globalAlpha = SELECTION_OPACITY;
 
-    ctx.strokeRect(
+    ctx.rect(
       this.startX,
       this.startY,
       this.x - this.startX,
       this.y - this.startY
     );
+
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.closePath();
+
+    ctx.restore();
   }
 
   public enter(args: any) {}

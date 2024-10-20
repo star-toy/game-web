@@ -7,7 +7,7 @@ class PuzzleBoard {
   public states = new BoardStates(this);
   public selections = new BoardSelections();
 
-  public async draw(ctx: CanvasRenderingContext2D) {
+  public draw(ctx: CanvasRenderingContext2D) {
     for (const block of this.blocks) {
       block.draw(ctx);
     }
