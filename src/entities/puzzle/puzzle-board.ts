@@ -20,7 +20,7 @@ class PuzzleBoard {
     this.height = height;
   }
 
-  public async initialize(channelId: string) {
+  public async fetch(channelId: string) {
     if (this.id !== channelId) {
       this.id = channelId;
       this.blocks = [new ImageBlock(0, 0, 0, 0, MOCK_IMAGE_URL)];
