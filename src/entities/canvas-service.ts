@@ -14,8 +14,6 @@ class CanvasService {
     }
 
     this.ctx = ctx;
-
-    this.listen();
   }
 
   public render() {
@@ -36,16 +34,16 @@ class CanvasService {
     this.ctx.scale(devicePixelRatio, devicePixelRatio);
   }
 
-  private listen() {
-    this.canvas.addEventListener("mousedown", (event) =>
-      this.board.handleMouseDown(event)
-    );
-    this.canvas.addEventListener("mousemove", (event) =>
-      this.board.handleMouseMove(event)
-    );
-    this.canvas.addEventListener("mouseup", (event) =>
-      this.board.handleMouseUp(event)
-    );
+  public attach() {
+    this.canvas.addEventListener("mousedown", this.board.handleMouseDown);
+    this.canvas.addEventListener("mousemove", this.board.handleMouseMove);
+    this.canvas.addEventListener("mouseup", this.board.handleMouseUp);
+  }
+
+  public detach() {
+    this.canvas.removeEventListener("mousedown", this.board.handleMouseDown);
+    this.canvas.removeEventListener("mousemove", this.board.handleMouseMove);
+    this.canvas.removeEventListener("mouseup", this.board.handleMouseUp);
   }
 }
 

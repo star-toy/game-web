@@ -25,17 +25,15 @@ class PuzzleBoard {
     return this.blocks.find((block) => block.includes(x, y)) ?? null;
   }
 
-  public handleMouseDown(event: MouseEvent) {
+  public handleMouseDown = (event: MouseEvent) => {
     this.states.current?.handleMouseDown(event);
-  }
-
-  public handleMouseMove(event: MouseEvent) {
+  };
+  public handleMouseMove = (event: MouseEvent) => {
     this.states.current?.handleMouseMove(event);
-  }
-
-  public handleMouseUp(event: MouseEvent) {
+  };
+  public handleMouseUp = (event: MouseEvent) => {
     this.states.current?.handleMouseUp(event);
-  }
+  };
 }
 
 export default PuzzleBoard;

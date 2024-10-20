@@ -23,6 +23,8 @@ const CanvasContainer = ({ board }: Props) => {
     if (canvasRef.current) {
       canvasServiceRef.current = new CanvasService(canvasRef.current, board);
 
+      canvasServiceRef.current.attach();
+
       canvasServiceRef.current.resize(width, height);
 
       let requestId: number;
@@ -36,6 +38,8 @@ const CanvasContainer = ({ board }: Props) => {
 
       return () => {
         window.cancelAnimationFrame(requestId);
+
+        canvasServiceRef.current?.detach();
       };
     }
   }, [canvasRef.current]);
