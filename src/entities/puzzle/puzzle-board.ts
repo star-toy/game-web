@@ -1,11 +1,25 @@
-import { Block } from "./puzzle-block";
+import { Block, ImageBlock } from "./puzzle-block";
 import { BoardStates } from "./puzzle-state";
 import { BoardSelections } from "./puzzle-selection";
+
+const MOCK_IMAGE_URL =
+  "https://image.aladin.co.kr/product/5592/81/cover500/3581198452_1.jpg";
 
 class PuzzleBoard {
   public blocks: Block[] = [];
   public states = new BoardStates(this);
   public selections = new BoardSelections();
+
+  private id = "";
+
+  public async initialize(channelId: string) {
+    if (this.id !== channelId) {
+      this.id = channelId;
+      this.blocks = [new ImageBlock(0, 0, 0, 0, MOCK_IMAGE_URL)];
+      this.states = new BoardStates(this);
+      this.selections = new BoardSelections();
+    }
+  }
 
   public draw(ctx: CanvasRenderingContext2D) {
     for (const block of this.blocks) {
