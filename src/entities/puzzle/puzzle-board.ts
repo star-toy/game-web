@@ -10,7 +10,15 @@ class PuzzleBoard {
   public states = new BoardStates(this);
   public selections = new BoardSelections();
 
+  private width = 0;
+  private height = 0;
+
   private id = "";
+
+  public resize(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+  }
 
   public async initialize(channelId: string) {
     if (this.id !== channelId) {

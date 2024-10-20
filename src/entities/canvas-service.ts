@@ -32,6 +32,8 @@ class CanvasService {
     this.canvas.height = Math.floor(height * devicePixelRatio);
 
     this.ctx.scale(devicePixelRatio, devicePixelRatio);
+
+    this.board.resize(this.canvas.width, this.canvas.height);
   }
 
   public attach() {
