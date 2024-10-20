@@ -39,10 +39,6 @@ class PuzzleBoard {
     this.states.current?.draw(ctx);
   }
 
-  public subscribe(block: Block) {
-    this.blocks.push(block);
-  }
-
   public getBlockAtPosition(x: number, y: number) {
     return this.blocks.find((block) => block.includes(x, y)) ?? null;
   }
