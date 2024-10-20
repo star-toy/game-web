@@ -1,4 +1,7 @@
 class Block {
+  private originX = 0;
+  private originY = 0;
+
   constructor(
     private x: number,
     private y: number,
@@ -15,8 +18,8 @@ class Block {
   }
 
   public move(x: number, y: number) {
-    this.x = x;
-    this.y = y;
+    this.x += x - this.x - this.originX;
+    this.y += y - this.y - this.originY;
   }
 
   public resize(width: number, height: number) {
@@ -31,6 +34,16 @@ class Block {
       this.y <= y &&
       this.y + this.height >= y
     );
+  }
+
+  public setOrigin(x: number, y: number) {
+    this.originX = x - this.x;
+    this.originY = y - this.y;
+  }
+
+  public resetOrigin() {
+    this.originX = 0;
+    this.originY = 0;
   }
 }
 

@@ -5,6 +5,7 @@ import {
   SELECTION_OPACITY,
 } from "@/src/shared/constants";
 import PuzzleBoard from "./puzzle-board";
+import { Block } from "./puzzle-block";
 
 interface Point {
   clientX: number;
@@ -69,24 +70,66 @@ class IdleState implements State {
     }
   }
 
+  private startSelectionArea({ clientX, clientY }: Point) {
+    const block = this.board.getBlockAtPosition(clientX, clientY);
+
+    if (block) {
+      this.board.selections.clear();
+      this.board.selections.subscribe(block);
+
+      this.board.states.push(new SingleSelectState(this.board, block), {
+        clientX,
+        clientY,
+      });
+    } else {
+      this.board.selections.clear();
+
+      this.board.states.push(
+        new MultipleSelectState(this.board, clientX, clientY, clientX, clientY)
+      );
+    }
+  }
+
   public handleMouseMove(event: MouseEvent) {}
   public handleTouchMove(event: TouchEvent) {}
 
   public handleMouseUp(event: MouseEvent) {}
   public handleTouchEnd(event: TouchEvent) {}
+}
 
-  private startSelectionArea({ clientX, clientY }: Point) {
-    const block = this.board.getBlockAtPosition(clientX, clientY);
+class SingleSelectState implements State {
+  constructor(readonly board: PuzzleBoard, private readonly block: Block) {}
 
-    if (block) {
-      this.board.selections.subscribe(block);
-    } else {
-      this.board.selections.clear();
+  public draw(ctx: CanvasRenderingContext2D) {}
+
+  public enter({ clientX, clientY }: Point) {
+    this.block.setOrigin(clientX, clientY);
+  }
+  public exit(args: any) {
+    this.block.resetOrigin();
+  }
+
+  public handleMouseDown(event: MouseEvent) {}
+  public handleTouchStart(event: TouchEvent) {}
+
+  public handleMouseMove(event: MouseEvent) {
+    this.handleMove(event);
+  }
+  public handleTouchMove(event: TouchEvent) {
+    if (event.touches.length === 1) {
+      this.handleMove(event.touches[0]);
     }
+  }
 
-    this.board.states.push(
-      new MultipleSelectState(this.board, clientX, clientY, clientX, clientY)
-    );
+  private handleMove({ clientX, clientY }: Point) {
+    this.block.move(clientX, clientY);
+  }
+
+  public handleMouseUp(event: MouseEvent) {
+    this.board.states.pop();
+  }
+  public handleTouchEnd(event: TouchEvent) {
+    this.board.states.pop();
   }
 }
 
