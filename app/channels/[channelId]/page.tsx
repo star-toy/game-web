@@ -135,6 +135,8 @@ class Board {
   public render(ctx: CanvasRenderingContext2D) {
     if (!this.image.complete) return;
 
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
     for (const block of this.blocks) {
       ctx.drawImage(this.image, ...block.area);
     }
