@@ -30,6 +30,14 @@ const ChannelPage = ({
         canvas.height = Math.floor(height * devicePixelRatio);
 
         ctx.scale(devicePixelRatio, devicePixelRatio);
+
+        const image = new Image();
+        image.onload = () => {
+          ctx.drawImage(image, 100, 100);
+        };
+
+        image.src =
+          "https://image.aladin.co.kr/product/5592/81/cover500/3581198452_1.jpg";
       }
     }
   }, [width, height]);
