@@ -33,7 +33,21 @@ const ChannelPage = ({
 
         const image = new Image();
         image.onload = () => {
-          ctx.drawImage(image, 100, 100);
+          for (let i = 0; i < 3; i += 1) {
+            for (let j = 0; j < 3; j += 1) {
+              ctx.drawImage(
+                image,
+                i * (image.width / 3),
+                j * (image.height / 3),
+                image.width / 3,
+                image.height / 3,
+                100 + i * (image.width / 3) + i * 50,
+                100 + j * (image.height / 3) + j * 50,
+                image.width / 3,
+                image.height / 3
+              );
+            }
+          }
         };
 
         image.src =
