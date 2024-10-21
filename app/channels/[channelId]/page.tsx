@@ -6,6 +6,7 @@ import { useClientWidthHeight } from "@/src/shared/hooks/use-client-width-height
 
 const MOCK_IMAGE_URL =
   "https://image.aladin.co.kr/product/5592/81/cover500/3581198452_1.jpg";
+const MOCK_PIECES = 16;
 
 const ChannelPage = ({
   params: { channelId },
@@ -50,6 +51,8 @@ const ChannelPage = ({
       const image = await new ImageLoader().loadImage(imageUrl as string);
 
       boardRef.current = new Board(image);
+
+      boardRef.current.setPieces(MOCK_PIECES);
 
       const ctx = canvasRef.current?.getContext("2d");
 
@@ -128,9 +131,7 @@ class ImageLoader {
 class Board {
   private blocks: Block[] = [];
 
-  constructor(private readonly image: HTMLImageElement) {
-    this.createBlocks();
-  }
+  constructor(private readonly image: HTMLImageElement) {}
 
   public render(ctx: CanvasRenderingContext2D) {
     if (!this.image.complete) return;
@@ -142,19 +143,31 @@ class Board {
     }
   }
 
-  private createBlocks() {
+  public setPieces(pieces: number) {
+    this.createBlocks(pieces);
+  }
+
+  private createBlocks(pieces: number) {
     const blocks: Block[] = [];
 
-    for (let i = 0; i < 3; i += 1) {
-      for (let j = 0; j < 3; j += 1) {
+    const square = Math.sqrt(pieces);
+
+    const blockWidth = this.image.width / square;
+    const blockHeight = this.image.height / square;
+
+    const margin = 100;
+    const gap = 50;
+
+    for (let i = 0; i < square; i += 1) {
+      for (let j = 0; j < square; j += 1) {
         blocks.push(
           new Block(
-            i * (this.image.width / 3),
-            j * (this.image.height / 3),
-            this.image.width / 3,
-            this.image.height / 3,
-            100 + i * (this.image.width / 3) + i * 50,
-            100 + j * (this.image.height / 3) + j * 50
+            i * blockWidth,
+            j * blockHeight,
+            blockWidth,
+            blockHeight,
+            margin + i * (blockWidth + gap),
+            margin + j * (blockHeight + gap)
           )
         );
       }
