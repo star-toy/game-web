@@ -52,9 +52,9 @@ const ChannelPage = ({
 
       const board = new Board(image);
 
-      board.setPieces(MOCK_PIECES);
-
       setBoard(board);
+
+      board.setPieces(MOCK_PIECES);
 
       const ctx = canvasRef.current?.getContext("2d");
 
@@ -74,6 +74,30 @@ const ChannelPage = ({
       }
     })();
   }, [channelId]);
+
+  useEffect(() => {
+    if (!canvasRef.current || !board) return;
+
+    canvasRef.current.addEventListener("mousedown", board.handleMouseDown);
+
+    canvasRef.current.addEventListener("mousemove", board.handleMouseMove);
+
+    canvasRef.current.addEventListener("mouseup", board.handleMouseUp);
+
+    return () => {
+      canvasRef.current!.removeEventListener(
+        "mousedown",
+        board.handleMouseDown
+      );
+
+      canvasRef.current!.removeEventListener(
+        "mousemove",
+        board.handleMouseMove
+      );
+
+      canvasRef.current!.removeEventListener("mouseup", board.handleMouseUp);
+    };
+  }, [canvasRef.current, board]);
 
   return (
     <section ref={containerRef} className="flex w-full h-screen">
@@ -145,10 +169,13 @@ interface State {
   draw(ctx: CanvasRenderingContext2D): void;
 
   enter(args?: any): void;
+
   exit(args?: any): void;
 
   handleMouseDown(event: MouseEvent): void;
+
   handleMouseMove(event: MouseEvent): void;
+
   handleMouseUp(event: MouseEvent): void;
 }
 
@@ -216,6 +243,18 @@ class Board {
   public getBlockAtPosition(x: number, y: number) {
     return this.blocks.find((block) => block.includes(x, y)) ?? null;
   }
+
+  public handleMouseDown = (event: MouseEvent) => {
+    this.states.current?.handleMouseDown(event);
+  };
+
+  public handleMouseMove = (event: MouseEvent) => {
+    this.states.current?.handleMouseMove(event);
+  };
+
+  public handleMouseUp = (event: MouseEvent) => {
+    this.states.current?.handleMouseUp(event);
+  };
 
   private createBlocks(pieces: number) {
     const blocks: Block[] = [];
