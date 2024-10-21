@@ -11,6 +11,9 @@ const MOCK_PIECES = 16;
 const SELECTION_COLOR = "#339af0";
 const SELECTION_LINE_WIDTH = 4;
 
+const BLOCK_MARGIN = 100;
+const BLOCK_GAP = 50;
+
 const ChannelPage = ({
   params: { channelId },
 }: {
@@ -430,9 +433,6 @@ class Board {
     const blockWidth = this.image.width / square;
     const blockHeight = this.image.height / square;
 
-    const margin = 100;
-    const gap = 50;
-
     for (let i = 0; i < square; i += 1) {
       for (let j = 0; j < square; j += 1) {
         blocks.push(
@@ -441,8 +441,8 @@ class Board {
             j * blockHeight,
             blockWidth,
             blockHeight,
-            margin + i * (blockWidth + gap),
-            margin + j * (blockHeight + gap)
+            BLOCK_MARGIN + i * (blockWidth + BLOCK_GAP),
+            BLOCK_MARGIN + j * (blockHeight + BLOCK_GAP)
           )
         );
       }
