@@ -79,23 +79,33 @@ const ChannelPage = ({
     if (!canvasRef.current || !board) return;
 
     canvasRef.current.addEventListener("mousedown", board.handleMouseDown);
-
     canvasRef.current.addEventListener("mousemove", board.handleMouseMove);
-
     canvasRef.current.addEventListener("mouseup", board.handleMouseUp);
+
+    canvasRef.current.addEventListener("touchstart", board.handleTouchStart);
+    canvasRef.current.addEventListener("touchmove", board.handleTouchMove);
+    canvasRef.current.addEventListener("touchend", board.handleTouchEnd);
 
     return () => {
       canvasRef.current!.removeEventListener(
         "mousedown",
         board.handleMouseDown
       );
-
       canvasRef.current!.removeEventListener(
         "mousemove",
         board.handleMouseMove
       );
-
       canvasRef.current!.removeEventListener("mouseup", board.handleMouseUp);
+
+      canvasRef.current!.removeEventListener(
+        "touchstart",
+        board.handleTouchStart
+      );
+      canvasRef.current!.removeEventListener(
+        "touchmove",
+        board.handleTouchMove
+      );
+      canvasRef.current!.removeEventListener("touchend", board.handleTouchEnd);
     };
   }, [canvasRef.current, board]);
 
@@ -191,10 +201,13 @@ interface State {
   exit(args?: any): void;
 
   handleMouseDown(event: MouseEvent): void;
+  handleTouchStart(event: TouchEvent): void;
 
   handleMouseMove(event: MouseEvent): void;
+  handleTouchMove(event: TouchEvent): void;
 
   handleMouseUp(event: MouseEvent): void;
+  handleTouchEnd(event: TouchEvent): void;
 }
 
 class IdleState implements State {
@@ -207,6 +220,26 @@ class IdleState implements State {
   public exit(args: any) {}
 
   public handleMouseDown({ clientX, clientY }: Point) {
+    this.handleInteractionStart({ clientX, clientY });
+  }
+
+  public handleTouchStart(event: TouchEvent) {
+    if (event.touches.length === 1) {
+      this.handleInteractionStart(event.touches[0]);
+    }
+  }
+
+  public handleMouseMove(event: MouseEvent) {
+    // TODO: block hover 시점에 마우스 커서 변경
+  }
+
+  public handleTouchMove(event: TouchEvent) {}
+
+  public handleMouseUp(event: MouseEvent) {}
+
+  public handleTouchEnd(event: TouchEvent) {}
+
+  private handleInteractionStart({ clientX, clientY }: Point) {
     const block = this.board.getBlockAtPosition(clientX, clientY);
 
     if (block) {
@@ -218,12 +251,6 @@ class IdleState implements State {
       // TODO: multiple select
     }
   }
-
-  public handleMouseMove(event: MouseEvent) {
-    // TODO: block hover 시점에 마우스 커서 변경
-  }
-
-  public handleMouseUp(event: MouseEvent) {}
 }
 
 interface Point {
@@ -246,11 +273,31 @@ class SingleSelectState implements State {
 
   public handleMouseDown(event: MouseEvent) {}
 
+  public handleTouchStart(event: TouchEvent) {}
+
   public handleMouseMove({ clientX, clientY }: Point) {
-    this.block.move(clientX, clientY);
+    this.handleInteractionMove({ clientX, clientY });
+  }
+
+  public handleTouchMove(event: TouchEvent) {
+    if (event.touches.length === 1) {
+      this.handleInteractionMove(event.touches[0]);
+    }
   }
 
   public handleMouseUp(event: MouseEvent) {
+    this.handleInteractionEnd();
+  }
+
+  public handleTouchEnd(event: TouchEvent) {
+    this.handleInteractionEnd();
+  }
+
+  private handleInteractionMove({ clientX, clientY }: Point) {
+    this.block.move(clientX, clientY);
+  }
+
+  private handleInteractionEnd() {
     this.board.states.pop();
   }
 }
@@ -305,13 +352,22 @@ class Board {
   public handleMouseDown = (event: MouseEvent) => {
     this.states.current?.handleMouseDown(event);
   };
+  public handleTouchStart = (event: TouchEvent) => {
+    this.states.current?.handleTouchStart(event);
+  };
 
   public handleMouseMove = (event: MouseEvent) => {
     this.states.current?.handleMouseMove(event);
   };
+  public handleTouchMove = (event: TouchEvent) => {
+    this.states.current?.handleTouchMove(event);
+  };
 
   public handleMouseUp = (event: MouseEvent) => {
     this.states.current?.handleMouseUp(event);
+  };
+  public handleTouchEnd = (event: TouchEvent) => {
+    this.states.current?.handleTouchEnd(event);
   };
 
   private createBlocks(pieces: number) {
