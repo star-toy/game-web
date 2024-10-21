@@ -389,7 +389,13 @@ class Board {
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    for (const block of this.blocks) {
+    for (const block of this.blocks.filter(
+      (b) => !this.selections.includes(b)
+    )) {
+      ctx.drawImage(this.image, ...block.area);
+    }
+
+    for (const block of this.selections.blocks) {
       ctx.drawImage(this.image, ...block.area);
     }
 
