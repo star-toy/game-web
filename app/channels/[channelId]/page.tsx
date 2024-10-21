@@ -112,6 +112,15 @@ class Block {
       this.height,
     ] as const;
   }
+
+  public includes(x: number, y: number) {
+    return (
+      this.x <= x &&
+      this.x + this.width >= x &&
+      this.y <= y &&
+      this.y + this.height >= y
+    );
+  }
 }
 
 class ImageLoader {
@@ -202,6 +211,10 @@ class Board {
 
   public setPieces(pieces: number) {
     this.createBlocks(pieces);
+  }
+
+  public getBlockAtPosition(x: number, y: number) {
+    return this.blocks.find((block) => block.includes(x, y)) ?? null;
   }
 
   private createBlocks(pieces: number) {
