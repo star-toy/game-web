@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useClientWidthHeight } from "@/src/shared/hooks/use-client-width-height";
 
@@ -16,7 +16,7 @@ const ChannelPage = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const boardRef = useRef<null | Board>(null);
+  const [board, setBoard] = useState<null | Board>(null);
 
   const { width, height } = useClientWidthHeight(containerRef);
 
@@ -50,9 +50,11 @@ const ChannelPage = ({
 
       const image = await new ImageLoader().loadImage(imageUrl as string);
 
-      boardRef.current = new Board(image);
+      const board = new Board(image);
 
-      boardRef.current.setPieces(MOCK_PIECES);
+      board.setPieces(MOCK_PIECES);
+
+      setBoard(board);
 
       const ctx = canvasRef.current?.getContext("2d");
 
@@ -61,7 +63,7 @@ const ChannelPage = ({
         const requestAnimation = () => {
           requestId = window.requestAnimationFrame(requestAnimation);
 
-          boardRef.current!.render(ctx);
+          board.render(ctx);
         };
 
         requestAnimation();
