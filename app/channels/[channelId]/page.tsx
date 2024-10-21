@@ -47,7 +47,7 @@ const ChannelPage = ({
 
       const renderer = new Renderer();
 
-      await renderer.loadImage(imageUrl as string);
+      const blocks = await renderer.loadImage(imageUrl as string);
 
       const ctx = canvasRef.current?.getContext("2d");
 
@@ -56,7 +56,7 @@ const ChannelPage = ({
         const requestAnimation = () => {
           requestId = window.requestAnimationFrame(requestAnimation);
 
-          renderer.render(ctx);
+          renderer.render(ctx, blocks);
         };
 
         requestAnimation();
@@ -111,19 +111,17 @@ class Renderer {
   private image: HTMLImageElement = new Image();
 
   public async loadImage(source: string) {
-    return new Promise((resolve) => {
+    return new Promise<Block[]>((resolve) => {
       this.image.onload = () => {
-        resolve(this.image);
+        resolve(this.createBlocks());
       };
 
       this.image.src = source;
     });
   }
 
-  public render(ctx: CanvasRenderingContext2D) {
+  public render(ctx: CanvasRenderingContext2D, blocks: Block[]) {
     if (!this.image.complete) return;
-
-    const blocks = this.createBlocks();
 
     for (const block of blocks) {
       ctx.drawImage(this.image, ...block.area);
