@@ -4,6 +4,9 @@ import { useEffect, useRef } from "react";
 
 import { useClientWidthHeight } from "@/src/shared/hooks/use-client-width-height";
 
+const MOCK_IMAGE_URL =
+  "https://image.aladin.co.kr/product/5592/81/cover500/3581198452_1.jpg";
+
 const ChannelPage = ({
   params: { channelId },
 }: {
@@ -30,9 +33,23 @@ const ChannelPage = ({
         canvas.height = Math.floor(height * devicePixelRatio);
 
         ctx.scale(devicePixelRatio, devicePixelRatio);
+      }
+    }
+  }, [width, height]);
 
-        const renderer = new Renderer();
+  useEffect(() => {
+    (async () => {
+      const imageUrl = await new Promise((resolve) =>
+        setTimeout(() => {
+          resolve(MOCK_IMAGE_URL);
+        }, 1000)
+      );
 
+      const renderer = new Renderer(imageUrl as string);
+
+      const ctx = canvasRef.current?.getContext("2d");
+
+      if (ctx) {
         let requestId: number;
         const requestAnimation = () => {
           requestId = window.requestAnimationFrame(requestAnimation);
@@ -46,8 +63,8 @@ const ChannelPage = ({
           window.cancelAnimationFrame(requestId);
         };
       }
-    }
-  }, [width, height]);
+    })();
+  }, [channelId]);
 
   return (
     <section ref={containerRef} className="flex w-full h-screen">
@@ -61,11 +78,10 @@ export default ChannelPage;
 class Renderer {
   private image: HTMLImageElement;
 
-  constructor() {
+  constructor(source: string) {
     this.image = new Image();
 
-    this.image.src =
-      "https://image.aladin.co.kr/product/5592/81/cover500/3581198452_1.jpg";
+    this.image.src = source;
   }
 
   render(ctx: CanvasRenderingContext2D) {
