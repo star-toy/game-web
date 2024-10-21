@@ -130,7 +130,62 @@ class ImageLoader {
   }
 }
 
+interface State {
+  readonly board: Board;
+
+  draw(ctx: CanvasRenderingContext2D): void;
+
+  enter(args?: any): void;
+  exit(args?: any): void;
+
+  handleMouseDown(event: MouseEvent): void;
+  handleMouseMove(event: MouseEvent): void;
+  handleMouseUp(event: MouseEvent): void;
+}
+
+class IdleState implements State {
+  constructor(readonly board: Board) {}
+
+  public draw(ctx: CanvasRenderingContext2D) {}
+
+  public enter(args: any) {}
+
+  public exit(args: any) {}
+
+  public handleMouseDown(event: MouseEvent) {}
+
+  public handleMouseMove(event: MouseEvent) {
+    // TODO: block hover 시점에 마우스 커서 변경
+  }
+
+  public handleMouseUp(event: MouseEvent) {}
+}
+
+class BoardStates {
+  constructor(private readonly board: Board) {}
+
+  private states: State[] = [new IdleState(this.board)];
+
+  public push(state: State, args?: any) {
+    this.current?.exit(args);
+    this.states.push(state);
+    this.current?.enter(args);
+  }
+
+  public pop(args?: any) {
+    this.current?.exit(args);
+    this.states.pop();
+    this.current?.enter(args);
+  }
+
+  public get current() {
+    return this.states.at(-1) ?? null;
+  }
+}
+
 class Board {
+  public readonly states = new BoardStates(this);
+
   private blocks: Block[] = [];
 
   constructor(private readonly image: HTMLImageElement) {}
