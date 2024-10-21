@@ -15,6 +15,8 @@ const ChannelPage = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const boardRef = useRef<null | Board>(null);
+
   const { width, height } = useClientWidthHeight(containerRef);
 
   useEffect(() => {
@@ -45,9 +47,9 @@ const ChannelPage = ({
         }, 1000)
       );
 
-      const renderer = new Renderer();
+      const image = await new ImageLoader().loadImage(imageUrl as string);
 
-      const blocks = await renderer.loadImage(imageUrl as string);
+      boardRef.current = new Board(image);
 
       const ctx = canvasRef.current?.getContext("2d");
 
@@ -56,7 +58,7 @@ const ChannelPage = ({
         const requestAnimation = () => {
           requestId = window.requestAnimationFrame(requestAnimation);
 
-          renderer.render(ctx, blocks);
+          boardRef.current!.render(ctx);
         };
 
         requestAnimation();
@@ -107,23 +109,33 @@ class Block {
   }
 }
 
-class Renderer {
+class ImageLoader {
   private image: HTMLImageElement = new Image();
 
   public async loadImage(source: string) {
-    return new Promise<Block[]>((resolve) => {
-      this.image.onload = () => {
-        resolve(this.createBlocks());
+    const image = new Image();
+
+    return new Promise<HTMLImageElement>((resolve) => {
+      image.onload = () => {
+        resolve(image);
       };
 
-      this.image.src = source;
+      image.src = source;
     });
   }
+}
 
-  public render(ctx: CanvasRenderingContext2D, blocks: Block[]) {
+class Board {
+  private blocks: Block[] = [];
+
+  constructor(private readonly image: HTMLImageElement) {
+    this.createBlocks();
+  }
+
+  public render(ctx: CanvasRenderingContext2D) {
     if (!this.image.complete) return;
 
-    for (const block of blocks) {
+    for (const block of this.blocks) {
       ctx.drawImage(this.image, ...block.area);
     }
   }
@@ -146,6 +158,6 @@ class Renderer {
       }
     }
 
-    return blocks;
+    this.blocks = blocks;
   }
 }
