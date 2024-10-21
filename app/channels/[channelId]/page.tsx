@@ -8,6 +8,9 @@ const MOCK_IMAGE_URL =
   "https://image.aladin.co.kr/product/5592/81/cover500/3581198452_1.jpg";
 const MOCK_PIECES = 16;
 
+const SELECTION_COLOR = "#339af0";
+const SELECTION_LINE_WIDTH = 4;
+
 const ChannelPage = ({
   params: { channelId },
 }: {
@@ -243,11 +246,17 @@ class IdleState implements State {
     const block = this.board.getBlockAtPosition(clientX, clientY);
 
     if (block) {
+      if (!this.board.selections.includes(block)) {
+        this.board.selections.clear();
+        this.board.selections.subscribe(block);
+      }
+
       this.board.states.push(new SingleSelectState(this.board, block), {
         clientX,
         clientY,
       });
     } else {
+      this.board.selections.clear();
       // TODO: multiple select
     }
   }
@@ -324,8 +333,49 @@ class BoardStates {
   }
 }
 
+class BoardSelections {
+  public blocks: Block[] = [];
+
+  constructor(private readonly board: Board) {}
+
+  public includes(block: Block) {
+    return this.blocks.includes(block);
+  }
+
+  public subscribe(block: Block) {
+    if (!this.blocks.includes(block)) {
+      this.blocks.push(block);
+    }
+  }
+
+  public unsubscribe(block: Block) {
+    this.blocks = this.blocks.filter((b) => b !== block);
+  }
+
+  public clear() {
+    this.blocks = [];
+  }
+
+  public draw(ctx: CanvasRenderingContext2D) {
+    for (const block of this.blocks) {
+      const [, , width, height, x, y] = block.area;
+
+      ctx.strokeStyle = SELECTION_COLOR;
+      ctx.lineWidth = SELECTION_LINE_WIDTH;
+
+      ctx.strokeRect(
+        x - SELECTION_LINE_WIDTH * 2,
+        y - SELECTION_LINE_WIDTH * 2,
+        width + SELECTION_LINE_WIDTH * 4,
+        height + SELECTION_LINE_WIDTH * 4
+      );
+    }
+  }
+}
+
 class Board {
   public readonly states = new BoardStates(this);
+  public readonly selections = new BoardSelections(this);
 
   private blocks: Block[] = [];
 
@@ -339,6 +389,8 @@ class Board {
     for (const block of this.blocks) {
       ctx.drawImage(this.image, ...block.area);
     }
+
+    this.selections.draw(ctx);
   }
 
   public setPieces(pieces: number) {
