@@ -115,6 +115,9 @@ type CanvasDrawImageParams = Parameters<
   : never;
 
 class Block {
+  private originX = 0;
+  private originY = 0;
+
   constructor(
     private readonly subX: number,
     private readonly subY: number,
@@ -144,6 +147,21 @@ class Block {
       this.y <= y &&
       this.y + this.height >= y
     );
+  }
+
+  public move(x: number, y: number) {
+    this.x += x - this.x - this.originX;
+    this.y += y - this.y - this.originY;
+  }
+
+  public setOrigin(x: number, y: number) {
+    this.originX = x - this.x;
+    this.originY = y - this.y;
+  }
+
+  public resetOrigin() {
+    this.originX = 0;
+    this.originY = 0;
   }
 }
 
@@ -188,13 +206,53 @@ class IdleState implements State {
 
   public exit(args: any) {}
 
-  public handleMouseDown(event: MouseEvent) {}
+  public handleMouseDown({ clientX, clientY }: Point) {
+    const block = this.board.getBlockAtPosition(clientX, clientY);
+
+    if (block) {
+      this.board.states.push(new SingleSelectState(this.board, block), {
+        clientX,
+        clientY,
+      });
+    } else {
+      // TODO: multiple select
+    }
+  }
 
   public handleMouseMove(event: MouseEvent) {
     // TODO: block hover 시점에 마우스 커서 변경
   }
 
   public handleMouseUp(event: MouseEvent) {}
+}
+
+interface Point {
+  readonly clientX: number;
+  readonly clientY: number;
+}
+
+class SingleSelectState implements State {
+  constructor(readonly board: Board, private readonly block: Block) {}
+
+  public draw(ctx: CanvasRenderingContext2D) {}
+
+  public enter({ clientX, clientY }: Point) {
+    this.block.setOrigin(clientX, clientY);
+  }
+
+  public exit(args: any) {
+    this.block.resetOrigin();
+  }
+
+  public handleMouseDown(event: MouseEvent) {}
+
+  public handleMouseMove({ clientX, clientY }: Point) {
+    this.block.move(clientX, clientY);
+  }
+
+  public handleMouseUp(event: MouseEvent) {
+    this.board.states.pop();
+  }
 }
 
 class BoardStates {
