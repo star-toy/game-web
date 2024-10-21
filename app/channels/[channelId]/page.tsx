@@ -31,27 +31,9 @@ const ChannelPage = ({
 
         ctx.scale(devicePixelRatio, devicePixelRatio);
 
-        const image = new Image();
-        image.onload = () => {
-          for (let i = 0; i < 3; i += 1) {
-            for (let j = 0; j < 3; j += 1) {
-              ctx.drawImage(
-                image,
-                i * (image.width / 3),
-                j * (image.height / 3),
-                image.width / 3,
-                image.height / 3,
-                100 + i * (image.width / 3) + i * 50,
-                100 + j * (image.height / 3) + j * 50,
-                image.width / 3,
-                image.height / 3
-              );
-            }
-          }
-        };
+        const renderer = new Renderer();
 
-        image.src =
-          "https://image.aladin.co.kr/product/5592/81/cover500/3581198452_1.jpg";
+        renderer.render(ctx);
       }
     }
   }, [width, height]);
@@ -64,3 +46,34 @@ const ChannelPage = ({
 };
 
 export default ChannelPage;
+
+class Renderer {
+  private image: HTMLImageElement;
+
+  constructor() {
+    this.image = new Image();
+
+    this.image.src =
+      "https://image.aladin.co.kr/product/5592/81/cover500/3581198452_1.jpg";
+  }
+
+  render(ctx: CanvasRenderingContext2D) {
+    if (!this.image.complete) return;
+
+    for (let i = 0; i < 3; i += 1) {
+      for (let j = 0; j < 3; j += 1) {
+        ctx.drawImage(
+          this.image,
+          i * (this.image.width / 3),
+          j * (this.image.height / 3),
+          this.image.width / 3,
+          this.image.height / 3,
+          100 + i * (this.image.width / 3) + i * 50,
+          100 + j * (this.image.height / 3) + j * 50,
+          this.image.width / 3,
+          this.image.height / 3
+        );
+      }
+    }
+  }
+}
