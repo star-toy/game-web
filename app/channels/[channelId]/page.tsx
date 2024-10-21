@@ -249,9 +249,9 @@ class IdleState implements State {
     const block = this.board.getBlockAtPosition(clientX, clientY);
 
     if (block) {
-      if (!this.board.selections.includes(block)) {
+      if (!this.board.selections.has(block)) {
         this.board.selections.clear();
-        this.board.selections.subscribe(block);
+        this.board.selections.select(block);
       }
 
       this.board.states.push(new SingleSelectState(this.board, block), {
@@ -341,21 +341,25 @@ class BoardSelections {
 
   constructor(private readonly board: Board) {}
 
-  public includes(block: Block) {
-    return this.blocks.includes(block);
-  }
-
-  public subscribe(block: Block) {
+  public select(block: Block) {
     if (!this.blocks.includes(block)) {
       this.blocks.push(block);
     }
   }
 
-  public unsubscribe(block: Block) {
+  public deselect(block: Block) {
     this.blocks = this.blocks.filter((b) => b !== block);
   }
 
+  public has(block: Block) {
+    return this.blocks.includes(block);
+  }
+
   public clear() {
+    if (this.blocks.length) {
+      this.board.moveBlocksToEnd(this.blocks);
+    }
+
     this.blocks = [];
   }
 
@@ -389,9 +393,7 @@ class Board {
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    for (const block of this.blocks.filter(
-      (b) => !this.selections.includes(b)
-    )) {
+    for (const block of this.blocks.filter((b) => !this.selections.has(b))) {
       ctx.drawImage(this.image, ...block.area);
     }
 
@@ -404,6 +406,13 @@ class Board {
 
   public setPieces(pieces: number) {
     this.createBlocks(pieces);
+  }
+
+  public moveBlocksToEnd(blocksToMove: Block[]) {
+    this.blocks = [
+      ...this.blocks.filter((b) => !blocksToMove.includes(b)),
+      ...blocksToMove,
+    ];
   }
 
   public getBlockAtPosition(x: number, y: number) {
