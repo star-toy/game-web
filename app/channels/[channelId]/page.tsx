@@ -45,7 +45,9 @@ const ChannelPage = ({
         }, 1000)
       );
 
-      const renderer = new Renderer(imageUrl as string);
+      const renderer = new Renderer();
+
+      await renderer.loadImage(imageUrl as string);
 
       const ctx = canvasRef.current?.getContext("2d");
 
@@ -76,12 +78,16 @@ const ChannelPage = ({
 export default ChannelPage;
 
 class Renderer {
-  private image: HTMLImageElement;
+  private image: HTMLImageElement = new Image();
 
-  constructor(source: string) {
-    this.image = new Image();
+  async loadImage(source: string) {
+    return new Promise((resolve) => {
+      this.image.onload = () => {
+        resolve(this.image);
+      };
 
-    this.image.src = source;
+      this.image.src = source;
+    });
   }
 
   render(ctx: CanvasRenderingContext2D) {
