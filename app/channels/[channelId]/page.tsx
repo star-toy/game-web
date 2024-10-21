@@ -77,10 +77,40 @@ const ChannelPage = ({
 
 export default ChannelPage;
 
+type CanvasDrawImageParams = Parameters<
+  CanvasRenderingContext2D["drawImage"]
+> extends [CanvasImageSource, ...infer Rest]
+  ? Rest
+  : never;
+
+class Block {
+  constructor(
+    private readonly subX: number,
+    private readonly subY: number,
+    private readonly width: number,
+    private readonly height: number,
+    private x: number,
+    private y: number
+  ) {}
+
+  get area(): CanvasDrawImageParams {
+    return [
+      this.subX,
+      this.subY,
+      this.width,
+      this.height,
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+    ] as const;
+  }
+}
+
 class Renderer {
   private image: HTMLImageElement = new Image();
 
-  async loadImage(source: string) {
+  public async loadImage(source: string) {
     return new Promise((resolve) => {
       this.image.onload = () => {
         resolve(this.image);
@@ -90,23 +120,34 @@ class Renderer {
     });
   }
 
-  render(ctx: CanvasRenderingContext2D) {
+  public render(ctx: CanvasRenderingContext2D) {
     if (!this.image.complete) return;
+
+    const blocks = this.createBlocks();
+
+    for (const block of blocks) {
+      ctx.drawImage(this.image, ...block.area);
+    }
+  }
+
+  private createBlocks() {
+    const blocks: Block[] = [];
 
     for (let i = 0; i < 3; i += 1) {
       for (let j = 0; j < 3; j += 1) {
-        ctx.drawImage(
-          this.image,
-          i * (this.image.width / 3),
-          j * (this.image.height / 3),
-          this.image.width / 3,
-          this.image.height / 3,
-          100 + i * (this.image.width / 3) + i * 50,
-          100 + j * (this.image.height / 3) + j * 50,
-          this.image.width / 3,
-          this.image.height / 3
+        blocks.push(
+          new Block(
+            i * (this.image.width / 3),
+            j * (this.image.height / 3),
+            this.image.width / 3,
+            this.image.height / 3,
+            100 + i * (this.image.width / 3) + i * 50,
+            100 + j * (this.image.height / 3) + j * 50
+          )
         );
       }
     }
+
+    return blocks;
   }
 }
