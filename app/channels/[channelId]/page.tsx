@@ -33,7 +33,18 @@ const ChannelPage = ({
 
         const renderer = new Renderer();
 
-        renderer.render(ctx);
+        let requestId: number;
+        const requestAnimation = () => {
+          requestId = window.requestAnimationFrame(requestAnimation);
+
+          renderer.render(ctx);
+        };
+
+        requestAnimation();
+
+        return () => {
+          window.cancelAnimationFrame(requestId);
+        };
       }
     }
   }, [width, height]);
