@@ -76,6 +76,18 @@ export class BoardBlocks {
       | [PuzzleBlock, PuzzleBlock, PuzzleBlock, PuzzleBlock];
   }
 
+  public getBlockByIndices(row: number, column: number): null | PuzzleBlock {
+    if (row < 0 || column < 0) return null;
+    if (row > this.maxRow || column > this.maxColumn) return null;
+
+    return (
+      this.blocks.find(
+        (block) =>
+          block.gridIndices.row === row && block.gridIndices.column === column
+      ) ?? null
+    );
+  }
+
   // TODO: 완전제곱수가 아닐 때
   private createBlocks(width: number, height: number, pieces: number) {
     const blocks: PuzzleBlock[] = [];

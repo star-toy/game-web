@@ -32,6 +32,9 @@ export class PuzzleBoard {
   public findNearby(block: PuzzleBlock) {
     return this.blocks.findNearby(block);
   }
+  public getBlockByIndices(row: number, column: number) {
+    return this.blocks.getBlockByIndices(row, column);
+  }
 
   public handleMouseDown = (event: MouseEvent) => {
     this.states.current?.handleMouseDown(event);
