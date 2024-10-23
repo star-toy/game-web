@@ -41,6 +41,15 @@ export class PuzzleBlock {
     ] as const;
   }
 
+  get edgeCenters() {
+    return {
+      top: [this.x + this.width / 2, this.y],
+      bottom: [this.x + this.width / 2, this.y + this.height],
+      left: [this.x, this.y + this.height / 2],
+      right: [this.x + this.width, this.y + this.height / 2],
+    } as const;
+  }
+
   public includes(x: number, y: number) {
     return (
       this.x <= x &&
