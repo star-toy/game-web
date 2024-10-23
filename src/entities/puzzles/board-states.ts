@@ -31,7 +31,7 @@ class IdleState implements State {
 
   public exit(args: any) {}
 
-  public handleMouseDown({ clientX, clientY }: Point) {
+  public handleMouseDown({ clientX, clientY }: InteractionPoint) {
     this.handleInteractionStart({ clientX, clientY });
   }
 
@@ -51,7 +51,7 @@ class IdleState implements State {
 
   public handleTouchEnd(event: TouchEvent) {}
 
-  private handleInteractionStart({ clientX, clientY }: Point) {
+  private handleInteractionStart({ clientX, clientY }: InteractionPoint) {
     const block = this.board.getBlockAtPosition(clientX, clientY);
 
     if (block) {
@@ -70,7 +70,7 @@ class IdleState implements State {
   }
 }
 
-interface Point {
+interface InteractionPoint {
   readonly clientX: number;
   readonly clientY: number;
 }
@@ -102,7 +102,7 @@ class SingleSelectState implements State {
 
   public handleTouchStart(event: TouchEvent) {}
 
-  public handleMouseMove({ clientX, clientY }: Point) {
+  public handleMouseMove({ clientX, clientY }: InteractionPoint) {
     this.handleInteractionMove({ clientX, clientY });
   }
 
@@ -120,7 +120,7 @@ class SingleSelectState implements State {
     this.handleInteractionEnd();
   }
 
-  private handleInteractionMove({ clientX, clientY }: Point) {
+  private handleInteractionMove({ clientX, clientY }: InteractionPoint) {
     this.block.move(clientX - this.offsetX, clientY - this.offsetY);
   }
 
