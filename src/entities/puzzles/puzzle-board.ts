@@ -29,6 +29,9 @@ export class PuzzleBoard {
   public moveBlocksToEnd(blocksToMove: PuzzleBlock[]) {
     this.blocks.moveBlocksToEnd(blocksToMove);
   }
+  public findNearby(block: PuzzleBlock) {
+    return this.blocks.findNearby(block);
+  }
 
   public handleMouseDown = (event: MouseEvent) => {
     this.states.current?.handleMouseDown(event);

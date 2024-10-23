@@ -5,6 +5,9 @@ import { PuzzleBoard } from "./puzzle-board";
 export class BoardBlocks {
   private blocks: PuzzleBlock[] = [];
 
+  private maxRow = 0;
+  private maxColumn = 0;
+
   constructor(private readonly board: PuzzleBoard) {}
 
   public initializeBlocks(pieces: number) {
@@ -38,6 +41,32 @@ export class BoardBlocks {
     ];
   }
 
+  public findNearby(block: PuzzleBlock) {
+    const blocks: PuzzleBlock[] = [];
+
+    if (0 < block.column) {
+      blocks.push(this.blocks.find((b) => b.column === block.column - 1)!);
+    }
+
+    if (block.column < this.maxColumn) {
+      blocks.push(this.blocks.find((b) => b.column === block.column + 1)!);
+    }
+
+    if (0 < block.row) {
+      blocks.push(this.blocks.find((b) => b.row === block.row - 1)!);
+    }
+
+    if (block.row < this.maxRow) {
+      blocks.push(this.blocks.find((b) => b.row === block.row + 1)!);
+    }
+
+    return blocks as
+      | [PuzzleBlock, PuzzleBlock]
+      | [PuzzleBlock, PuzzleBlock, PuzzleBlock]
+      | [PuzzleBlock, PuzzleBlock, PuzzleBlock, PuzzleBlock];
+  }
+
+  // TODO: 완전제곱수가 아닐 때
   private createBlocks(width: number, height: number, pieces: number) {
     const blocks: PuzzleBlock[] = [];
 
@@ -46,8 +75,11 @@ export class BoardBlocks {
     const blockWidth = width / square;
     const blockHeight = height / square;
 
-    for (let i = 0; i < square; i += 1) {
-      for (let j = 0; j < square; j += 1) {
+    this.maxRow = square - 1;
+    this.maxColumn = square - 1;
+
+    for (let i = 0; i <= this.maxRow; i += 1) {
+      for (let j = 0; j <= this.maxColumn; j += 1) {
         blocks.push(
           new PuzzleBlock(
             i,
