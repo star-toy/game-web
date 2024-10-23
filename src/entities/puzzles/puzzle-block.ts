@@ -9,6 +9,8 @@ export class PuzzleBlock {
   private originY = 0;
 
   constructor(
+    public readonly row: number,
+    public readonly column: number,
     private readonly subX: number,
     private readonly subY: number,
     private readonly width: number,

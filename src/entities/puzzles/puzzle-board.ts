@@ -75,6 +75,8 @@ export class PuzzleBoard {
       for (let j = 0; j < square; j += 1) {
         blocks.push(
           new PuzzleBlock(
+            i,
+            j,
             i * blockWidth,
             j * blockHeight,
             blockWidth,
