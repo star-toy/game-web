@@ -6,8 +6,8 @@ type CanvasDrawImageParams = Parameters<
 
 export class PuzzleBlock {
   constructor(
-    public readonly row: number,
-    public readonly column: number,
+    private readonly row: number,
+    private readonly column: number,
     private readonly subX: number,
     private readonly subY: number,
     private readonly width: number,
@@ -16,12 +16,16 @@ export class PuzzleBlock {
     private y: number
   ) {}
 
-  get position() {
-    return { x: this.x, y: this.y };
+  get gridIndices() {
+    return { row: this.row, column: this.column };
   }
 
   get dimensions() {
     return { width: this.width, height: this.height };
+  }
+
+  get position() {
+    return { x: this.x, y: this.y };
   }
 
   get bounds(): CanvasDrawImageParams {

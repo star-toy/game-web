@@ -44,20 +44,30 @@ export class BoardBlocks {
   public findNearby(block: PuzzleBlock) {
     const blocks: PuzzleBlock[] = [];
 
-    if (0 < block.column) {
-      blocks.push(this.blocks.find((b) => b.column === block.column - 1)!);
+    const { row, column } = block.gridIndices;
+
+    if (0 < column) {
+      blocks.push(
+        this.blocks.find(({ gridIndices: { column: c } }) => c === column - 1)!
+      );
     }
 
-    if (block.column < this.maxColumn) {
-      blocks.push(this.blocks.find((b) => b.column === block.column + 1)!);
+    if (column < this.maxColumn) {
+      blocks.push(
+        this.blocks.find(({ gridIndices: { column: c } }) => c === column + 1)!
+      );
     }
 
-    if (0 < block.row) {
-      blocks.push(this.blocks.find((b) => b.row === block.row - 1)!);
+    if (0 < row) {
+      blocks.push(
+        this.blocks.find(({ gridIndices: { row: r } }) => r === row - 1)!
+      );
     }
 
-    if (block.row < this.maxRow) {
-      blocks.push(this.blocks.find((b) => b.row === block.row + 1)!);
+    if (row < this.maxRow) {
+      blocks.push(
+        this.blocks.find(({ gridIndices: { row: r } }) => r === row + 1)!
+      );
     }
 
     return blocks as
