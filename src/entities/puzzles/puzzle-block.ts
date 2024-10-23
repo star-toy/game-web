@@ -5,9 +5,6 @@ type CanvasDrawImageParams = Parameters<
   : never;
 
 export class PuzzleBlock {
-  private originX = 0;
-  private originY = 0;
-
   constructor(
     public readonly row: number,
     public readonly column: number,
@@ -18,6 +15,10 @@ export class PuzzleBlock {
     private x: number,
     private y: number
   ) {}
+
+  get position() {
+    return { x: this.x, y: this.y };
+  }
 
   get bounds(): CanvasDrawImageParams {
     return [
@@ -42,17 +43,7 @@ export class PuzzleBlock {
   }
 
   public move(x: number, y: number) {
-    this.x += x - this.x - this.originX;
-    this.y += y - this.y - this.originY;
-  }
-
-  public setOrigin(x: number, y: number) {
-    this.originX = x - this.x;
-    this.originY = y - this.y;
-  }
-
-  public resetOrigin() {
-    this.originX = 0;
-    this.originY = 0;
+    this.x = x;
+    this.y = y;
   }
 }

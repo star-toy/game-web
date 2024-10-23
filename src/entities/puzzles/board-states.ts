@@ -60,10 +60,9 @@ class IdleState implements State {
         this.board.selections.select(block);
       }
 
-      this.board.states.push(new SingleSelectState(this.board, block), {
-        clientX,
-        clientY,
-      });
+      this.board.states.push(
+        new SingleSelectState(this.board, block, clientX, clientY)
+      );
     } else {
       this.board.selections.clear();
       // TODO: multiple select
@@ -79,17 +78,24 @@ interface Point {
 class SingleSelectState implements State {
   constructor(
     readonly board: PuzzleBoard,
-    private readonly block: PuzzleBlock
-  ) {}
+    private readonly block: PuzzleBlock,
+    private readonly offsetX: number,
+    private readonly offsetY: number
+  ) {
+    const { x, y } = this.block.position;
+
+    this.offsetX = offsetX - x;
+    this.offsetY = offsetY - y;
+  }
 
   public draw(ctx: CanvasRenderingContext2D) {}
 
-  public enter({ clientX, clientY }: Point) {
-    this.block.setOrigin(clientX, clientY);
+  public enter() {
+    // TODO: mouse cursor
   }
 
   public exit(args: any) {
-    this.block.resetOrigin();
+    // TODO: mouse cursor reset
   }
 
   public handleMouseDown(event: MouseEvent) {}
@@ -115,7 +121,7 @@ class SingleSelectState implements State {
   }
 
   private handleInteractionMove({ clientX, clientY }: Point) {
-    this.block.move(clientX, clientY);
+    this.block.move(clientX - this.offsetX, clientY - this.offsetY);
   }
 
   private handleInteractionEnd() {
