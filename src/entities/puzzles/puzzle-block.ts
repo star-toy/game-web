@@ -20,6 +20,10 @@ export class PuzzleBlock {
     return { x: this.x, y: this.y };
   }
 
+  get dimensions() {
+    return { width: this.width, height: this.height };
+  }
+
   get bounds(): CanvasDrawImageParams {
     return [
       this.subX,
