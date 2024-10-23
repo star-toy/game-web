@@ -22,11 +22,11 @@ export class BoardBlocks {
     for (const block of this.blocks.filter(
       (b) => !this.board.selections.has(b)
     )) {
-      ctx.drawImage(this.board.image, ...block.area);
+      ctx.drawImage(this.board.image, ...block.bounds);
     }
 
     for (const block of this.board.selections.blocks) {
-      ctx.drawImage(this.board.image, ...block.area);
+      ctx.drawImage(this.board.image, ...block.bounds);
     }
   }
 

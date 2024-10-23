@@ -19,7 +19,7 @@ export class PuzzleBlock {
     private y: number
   ) {}
 
-  get area(): CanvasDrawImageParams {
+  get bounds(): CanvasDrawImageParams {
     return [
       this.subX,
       this.subY,

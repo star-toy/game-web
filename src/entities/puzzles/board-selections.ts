@@ -32,7 +32,7 @@ export class BoardSelections {
 
   public draw(ctx: CanvasRenderingContext2D) {
     for (const block of this.blocks) {
-      const [, , width, height, x, y] = block.area;
+      const [, , width, height, x, y] = block.bounds;
 
       ctx.strokeStyle = SELECTION_COLOR;
       ctx.lineWidth = SELECTION_LINE_WIDTH;
