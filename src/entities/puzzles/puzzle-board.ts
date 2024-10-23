@@ -1,45 +1,33 @@
 import { PuzzleBlock } from "./puzzle-block";
 import { BoardStates } from "./board-states";
 import { BoardSelections } from "./board-selections";
-import { BLOCK_GAP, BLOCK_MARGIN } from "@/src/shared/constants";
+import { BoardBlocks } from "./board-blocks";
 
 export class PuzzleBoard {
   public readonly states = new BoardStates(this);
   public readonly selections = new BoardSelections(this);
+  public readonly blocks = new BoardBlocks(this);
 
-  private blocks: PuzzleBlock[] = [];
-
-  constructor(private readonly image: HTMLImageElement) {}
+  constructor(public readonly image: HTMLImageElement) {}
 
   public render(ctx: CanvasRenderingContext2D) {
     if (!this.image.complete) return;
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    for (const block of this.blocks.filter((b) => !this.selections.has(b))) {
-      ctx.drawImage(this.image, ...block.area);
-    }
-
-    for (const block of this.selections.blocks) {
-      ctx.drawImage(this.image, ...block.area);
-    }
+    this.blocks.draw(ctx);
 
     this.selections.draw(ctx);
   }
 
-  public setPieces(pieces: number) {
-    this.createBlocks(pieces);
+  public initializeBlocks(pieces: number) {
+    this.blocks.initializeBlocks(pieces);
   }
-
-  public moveBlocksToEnd(blocksToMove: PuzzleBlock[]) {
-    this.blocks = [
-      ...this.blocks.filter((b) => !blocksToMove.includes(b)),
-      ...blocksToMove,
-    ];
-  }
-
   public getBlockAtPosition(x: number, y: number) {
-    return this.blocks.find((block) => block.includes(x, y)) ?? null;
+    return this.blocks.getBlockAtPosition(x, y);
+  }
+  public moveBlocksToEnd(blocksToMove: PuzzleBlock[]) {
+    this.blocks.moveBlocksToEnd(blocksToMove);
   }
 
   public handleMouseDown = (event: MouseEvent) => {
@@ -62,32 +50,4 @@ export class PuzzleBoard {
   public handleTouchEnd = (event: TouchEvent) => {
     this.states.current?.handleTouchEnd(event);
   };
-
-  private createBlocks(pieces: number) {
-    const blocks: PuzzleBlock[] = [];
-
-    const square = Math.sqrt(pieces);
-
-    const blockWidth = this.image.width / square;
-    const blockHeight = this.image.height / square;
-
-    for (let i = 0; i < square; i += 1) {
-      for (let j = 0; j < square; j += 1) {
-        blocks.push(
-          new PuzzleBlock(
-            i,
-            j,
-            i * blockWidth,
-            j * blockHeight,
-            blockWidth,
-            blockHeight,
-            BLOCK_MARGIN + i * (blockWidth + BLOCK_GAP),
-            BLOCK_MARGIN + j * (blockHeight + BLOCK_GAP)
-          )
-        );
-      }
-    }
-
-    this.blocks = blocks;
-  }
 }

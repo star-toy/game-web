@@ -55,7 +55,7 @@ const ChannelPage = ({
 
       setBoard(board);
 
-      board.setPieces(MOCK_PIECES);
+      board.initializeBlocks(MOCK_PIECES);
 
       const ctx = canvasRef.current?.getContext("2d");
 
