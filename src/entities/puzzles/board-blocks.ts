@@ -106,12 +106,12 @@ export class BoardBlocks {
           new PuzzleBlock(
             i,
             j,
-            i * blockWidth,
-            j * blockHeight,
+            j * blockWidth,
+            i * blockHeight,
             blockWidth,
             blockHeight,
-            BLOCK_MARGIN + i * (blockWidth + BLOCK_GAP),
-            BLOCK_MARGIN + j * (blockHeight + BLOCK_GAP)
+            BLOCK_MARGIN + j * (blockWidth + BLOCK_GAP),
+            BLOCK_MARGIN + i * (blockHeight + BLOCK_GAP)
           )
         );
       }
