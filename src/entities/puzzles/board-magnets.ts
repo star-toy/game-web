@@ -32,23 +32,13 @@ export class BoardMagnets {
   }
 
   private findSnapTarget(block: PuzzleBlock) {
-    const { row, column } = block.gridIndices;
-
-    const potentialTargets = [
-      { row: row - 1, column, sourceEdge: "top", targetEdge: "bottom" },
-      { row: row + 1, column, sourceEdge: "bottom", targetEdge: "top" },
-      { row, column: column - 1, sourceEdge: "left", targetEdge: "right" },
-      { row, column: column + 1, sourceEdge: "right", targetEdge: "left" },
-    ] as const;
+    const potentialTargets = this.getPotentialTargets(block);
 
     const snapTargets = potentialTargets
-      .filter(({ row: r, column: c }) => {
-        return !!this.board.getBlockByIndices(r, c);
-      })
-      .map(({ row: r, column: c, sourceEdge, targetEdge }) => {
-        const targetBlock = this.board.getBlockByIndices(r, c)!;
+      .filter(({ targetBlock }) => !!targetBlock)
+      .map(({ targetBlock, sourceEdge, targetEdge }) => {
         const sourcePoint = block.getEdgeCenter(sourceEdge);
-        const targetPoint = targetBlock.getEdgeCenter(targetEdge);
+        const targetPoint = targetBlock!.getEdgeCenter(targetEdge);
 
         return {
           block: targetBlock,
@@ -68,8 +58,37 @@ export class BoardMagnets {
         });
   }
 
-  private adjustPosition(block: PuzzleBlock, snapInfo: SnapInfo) {
-    const { sourcePoint, targetPoint } = snapInfo;
+  private getPotentialTargets(block: PuzzleBlock) {
+    const { row, column } = block.gridIndices;
+
+    return [
+      {
+        targetBlock: this.board.getBlockByIndices(row - 1, column),
+        sourceEdge: "top" as const,
+        targetEdge: "bottom" as const,
+      },
+      {
+        targetBlock: this.board.getBlockByIndices(row + 1, column),
+        sourceEdge: "bottom" as const,
+        targetEdge: "top" as const,
+      },
+      {
+        targetBlock: this.board.getBlockByIndices(row, column - 1),
+        sourceEdge: "left" as const,
+        targetEdge: "right" as const,
+      },
+      {
+        targetBlock: this.board.getBlockByIndices(row, column + 1),
+        sourceEdge: "right" as const,
+        targetEdge: "left" as const,
+      },
+    ];
+  }
+
+  private adjustPosition(
+    block: PuzzleBlock,
+    { sourcePoint, targetPoint }: Pick<SnapInfo, "sourcePoint" | "targetPoint">
+  ) {
     const dx = targetPoint[0] - sourcePoint[0];
     const dy = targetPoint[1] - sourcePoint[1];
 
