@@ -4,7 +4,7 @@ type CanvasDrawImageParams = Parameters<
   ? Rest
   : never;
 
-type EdgeType = "top" | "bottom" | "left" | "right";
+export type EdgeType = "top" | "bottom" | "left" | "right";
 
 export class PuzzleBlock {
   constructor(

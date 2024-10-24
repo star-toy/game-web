@@ -1,5 +1,5 @@
 import { SNAP_SOUND_URL } from "@/src/shared/constants";
-import { PuzzleBlock } from "./puzzle-block";
+import { EdgeType, PuzzleBlock } from "./puzzle-block";
 import { PuzzleBoard } from "./puzzle-board";
 
 interface SnapInfo {
@@ -32,10 +32,7 @@ export class BoardMagnets {
   }
 
   private findSnapTarget(block: PuzzleBlock) {
-    const potentialTargets = this.getPotentialTargets(block);
-
-    const snapTargets = potentialTargets
-      .filter(({ targetBlock }) => !!targetBlock)
+    return this.getPotentialTargets(block)
       .map(({ targetBlock, sourceEdge, targetEdge }) => {
         const sourcePoint = block.getEdgeCenter(sourceEdge);
         const targetPoint = targetBlock!.getEdgeCenter(targetEdge);
@@ -47,15 +44,12 @@ export class BoardMagnets {
           targetPoint,
         };
       })
-      .filter(({ distance }) => distance <= this.threshold);
-
-    return !snapTargets.length
-      ? null
-      : snapTargets.reduce((snapInfo1, snapInfo2) => {
-          return snapInfo1.distance < snapInfo2.distance
-            ? snapInfo1
-            : snapInfo2;
-        });
+      .filter(({ distance }) => distance <= this.threshold)
+      .reduce<null | SnapInfo>((closest, current) => {
+        return closest == null || current.distance < closest.distance
+          ? current
+          : closest;
+      }, null);
   }
 
   private getPotentialTargets(block: PuzzleBlock) {
@@ -82,7 +76,11 @@ export class BoardMagnets {
         sourceEdge: "right" as const,
         targetEdge: "left" as const,
       },
-    ];
+    ].filter(({ targetBlock }) => !!targetBlock) as {
+      targetBlock: PuzzleBlock;
+      sourceEdge: EdgeType;
+      targetEdge: EdgeType;
+    }[];
   }
 
   private adjustPosition(
