@@ -2,8 +2,6 @@ import { SNAP_SOUND_URL } from "@/src/shared/constants";
 import { PuzzleBlock } from "./puzzle-block";
 import { PuzzleBoard } from "./puzzle-board";
 
-type EdgeType = "top" | "bottom" | "left" | "right";
-
 interface SnapInfo {
   block: PuzzleBlock;
   distance: number;
@@ -49,8 +47,8 @@ export class BoardMagnets {
       })
       .map(({ row: r, column: c, sourceEdge, targetEdge }) => {
         const targetBlock = this.board.getBlockByIndices(r, c)!;
-        const sourcePoint = block.edgeCenters[sourceEdge];
-        const targetPoint = targetBlock.edgeCenters[targetEdge];
+        const sourcePoint = block.getEdgeCenter(sourceEdge);
+        const targetPoint = targetBlock.getEdgeCenter(targetEdge);
 
         return {
           block: targetBlock,

@@ -4,6 +4,8 @@ type CanvasDrawImageParams = Parameters<
   ? Rest
   : never;
 
+type EdgeType = "top" | "bottom" | "left" | "right";
+
 export class PuzzleBlock {
   constructor(
     private readonly row: number,
@@ -41,13 +43,17 @@ export class PuzzleBlock {
     ] as const;
   }
 
-  get edgeCenters() {
-    return {
-      top: [this.x + this.width / 2, this.y],
-      bottom: [this.x + this.width / 2, this.y + this.height],
-      left: [this.x, this.y + this.height / 2],
-      right: [this.x + this.width, this.y + this.height / 2],
-    } as const;
+  public getEdgeCenter(edge: EdgeType): [number, number] {
+    switch (edge) {
+      case "top":
+        return [this.x + this.width / 2, this.y];
+      case "bottom":
+        return [this.x + this.width / 2, this.y + this.height];
+      case "left":
+        return [this.x, this.y + this.height / 2];
+      case "right":
+        return [this.x + this.width, this.y + this.height / 2];
+    }
   }
 
   public includes(x: number, y: number) {
