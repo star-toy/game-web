@@ -37,53 +37,20 @@ export class BoardMagnets {
     const { row, column } = block.gridIndices;
 
     const potentialTargets = [
-      {
-        row: row - 1,
-        column,
-        edge1: "top",
-        edge2: "bottom",
-      },
-      {
-        row: row + 1,
-        column,
-        edge1: "bottom",
-        edge2: "top",
-      },
-      {
-        row,
-        column: column - 1,
-        edge1: "left",
-        edge2: "right",
-      },
-      {
-        row,
-        column: column + 1,
-        edge1: "right",
-        edge2: "left",
-      },
-    ] as {
-      row: number;
-      column: number;
-      edge1: EdgeType;
-      edge2: EdgeType;
-    }[];
+      { row: row - 1, column, sourceEdge: "top", targetEdge: "bottom" },
+      { row: row + 1, column, sourceEdge: "bottom", targetEdge: "top" },
+      { row, column: column - 1, sourceEdge: "left", targetEdge: "right" },
+      { row, column: column + 1, sourceEdge: "right", targetEdge: "left" },
+    ] as const;
 
     const snapTargets = potentialTargets
       .filter(({ row: r, column: c }) => {
         return !!this.board.getBlockByIndices(r, c);
       })
-      .filter(({ row: r, column: c, edge1, edge2 }) => {
-        return (
-          this.calculateDistance(
-            block.edgeCenters[edge1],
-            this.board.getBlockByIndices(r, c)!.edgeCenters[edge2]
-          ) <= this.threshold
-        );
-      })
-      .map(({ row: r, column: c, edge1, edge2 }) => {
+      .map(({ row: r, column: c, sourceEdge, targetEdge }) => {
         const targetBlock = this.board.getBlockByIndices(r, c)!;
-        const sourcePoint = block.edgeCenters[edge1];
-        const targetPoint = targetBlock.edgeCenters[edge2];
+        const sourcePoint = block.edgeCenters[sourceEdge];
+        const targetPoint = targetBlock.edgeCenters[targetEdge];
 
         return {
           block: targetBlock,
@@ -91,7 +58,8 @@ export class BoardMagnets {
           sourcePoint,
           targetPoint,
         };
-      });
+      })
+      .filter(({ distance }) => distance <= this.threshold);
 
     return !snapTargets.length
       ? null
