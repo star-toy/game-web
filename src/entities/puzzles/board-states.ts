@@ -125,7 +125,11 @@ class SingleSelectState implements State {
   }
 
   private handleInteractionEnd() {
-    this.board.magnets.snap(this.block);
+    const wasBlockSnapped = this.board.magnets.snap(this.block);
+
+    if (wasBlockSnapped) {
+      this.board.audio.handleSnapSound();
+    }
 
     this.board.states.pop();
   }

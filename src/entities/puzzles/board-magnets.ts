@@ -1,5 +1,4 @@
-import { SNAP_SOUND_URL } from "@/src/shared/constants";
-import { EdgeType, PuzzleBlock } from "./puzzle-block";
+import { PuzzleBlock } from "./puzzle-block";
 import { PuzzleBoard } from "./puzzle-board";
 
 interface SnapInfo {
@@ -11,7 +10,6 @@ interface SnapInfo {
 
 export class BoardMagnets {
   private readonly threshold = Math.pow(6, 2);
-  private readonly snapSound = new Audio(SNAP_SOUND_URL);
 
   constructor(private readonly board: PuzzleBoard) {}
 
@@ -20,8 +18,9 @@ export class BoardMagnets {
 
     if (snapInfo?.distance) {
       this.adjustPosition(block, snapInfo);
-      this.playSnapSound();
     }
+
+    return !!snapInfo?.distance;
   }
 
   private calculateDistance(
@@ -66,9 +65,5 @@ export class BoardMagnets {
     const dy = targetPoint[1] - sourcePoint[1];
 
     block.move(block.position.x + dx, block.position.y + dy);
-  }
-
-  private playSnapSound() {
-    this.snapSound.play();
   }
 }

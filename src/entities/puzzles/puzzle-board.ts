@@ -3,12 +3,14 @@ import { BoardStates } from "./board-states";
 import { BoardSelections } from "./board-selections";
 import { BoardBlocks } from "./board-blocks";
 import { BoardMagnets } from "./board-magnets";
+import { BoardAudio } from "./board-audio";
 
 export class PuzzleBoard {
   public readonly states = new BoardStates(this);
   public readonly selections = new BoardSelections(this);
   public readonly blocks = new BoardBlocks(this);
   public readonly magnets = new BoardMagnets(this);
+  public readonly audio = new BoardAudio(this);
 
   constructor(
     public readonly image: HTMLImageElement,
@@ -60,5 +62,9 @@ export class PuzzleBoard {
   };
   public handleTouchEnd = (event: TouchEvent) => {
     this.states.current?.handleTouchEnd(event);
+  };
+
+  public handleAudioPermission = () => {
+    this.audio.handleAudioPermission();
   };
 }

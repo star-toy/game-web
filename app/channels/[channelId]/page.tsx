@@ -110,6 +110,10 @@ const ChannelPage = ({
     };
   }, [canvasRef.current, board]);
 
+  useEffect(() => {
+    board?.handleAudioPermission();
+  }, [board]);
+
   return (
     <section ref={containerRef} className="flex w-full h-screen">
       <canvas ref={canvasRef} />
