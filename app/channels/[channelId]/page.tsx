@@ -51,20 +51,20 @@ const ChannelPage = ({
 
       const image = await new ImageLoader().loadImage(imageUrl as string);
 
-      const board = new PuzzleBoard(image);
-
-      setBoard(board);
-
-      board.initializeBlocks(MOCK_PIECES);
-
       const ctx = canvasRef.current?.getContext("2d");
 
       if (ctx) {
+        const board = new PuzzleBoard(image, ctx);
+
+        setBoard(board);
+
+        board.initializeBlocks(MOCK_PIECES);
+
         let requestId: number;
         const requestAnimation = () => {
           requestId = window.requestAnimationFrame(requestAnimation);
 
-          board.render(ctx);
+          board.render();
         };
 
         requestAnimation();

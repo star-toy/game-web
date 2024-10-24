@@ -10,16 +10,19 @@ export class PuzzleBoard {
   public readonly blocks = new BoardBlocks(this);
   public readonly magnets = new BoardMagnets(this);
 
-  constructor(public readonly image: HTMLImageElement) {}
+  constructor(
+    public readonly image: HTMLImageElement,
+    public readonly ctx: CanvasRenderingContext2D
+  ) {}
 
-  public render(ctx: CanvasRenderingContext2D) {
+  public render() {
     if (!this.image.complete) return;
 
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-    this.blocks.draw(ctx);
+    this.blocks.draw(this.ctx);
 
-    this.selections.draw(ctx);
+    this.selections.draw(this.ctx);
   }
 
   public initializeBlocks(pieces: number) {
