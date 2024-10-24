@@ -19,19 +19,13 @@ export class BoardBlocks {
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
-    for (const block of this.blocks.filter(
-      (b) => !this.board.selections.has(b)
-    )) {
-      ctx.drawImage(this.board.image, ...block.bounds);
-    }
-
-    for (const block of this.board.selections.blocks) {
+    for (const block of this.blocks) {
       ctx.drawImage(this.board.image, ...block.bounds);
     }
   }
 
   public getBlockAtPosition(x: number, y: number) {
-    return this.blocks.find((block) => block.includes(x, y)) ?? null;
+    return this.blocks.findLast((block) => block.includes(x, y)) ?? null;
   }
 
   public moveBlocksToEnd(blocksToMove: PuzzleBlock[]) {

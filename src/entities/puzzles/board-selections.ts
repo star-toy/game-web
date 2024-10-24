@@ -11,6 +11,7 @@ export class BoardSelections {
   public select(block: PuzzleBlock) {
     if (!this.blocks.includes(block)) {
       this.blocks.push(block);
+      this.board.moveBlocksToEnd(this.blocks);
     }
   }
 
@@ -23,10 +24,6 @@ export class BoardSelections {
   }
 
   public clear() {
-    if (this.blocks.length) {
-      this.board.moveBlocksToEnd(this.blocks);
-    }
-
     this.blocks = [];
   }
 
@@ -40,8 +37,8 @@ export class BoardSelections {
       ctx.strokeRect(
         x - SELECTION_LINE_WIDTH * 2,
         y - SELECTION_LINE_WIDTH * 2,
-        width + SELECTION_LINE_WIDTH * 4,
-        height + SELECTION_LINE_WIDTH * 4
+        width + SELECTION_LINE_WIDTH * 3,
+        height + SELECTION_LINE_WIDTH * 3
       );
     }
   }
