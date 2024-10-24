@@ -43,6 +43,31 @@ export class PuzzleBlock {
     ] as const;
   }
 
+  public getNearestEdgeCenter(otherBlock: PuzzleBlock): [number, number] {
+    const distanceToTop = Math.abs(this.y - (otherBlock.y + otherBlock.height));
+    const distanceToBottom = Math.abs(this.y + this.height - otherBlock.y);
+    const distanceToLeft = Math.abs(this.x - (otherBlock.x + otherBlock.width));
+    const distanceToRight = Math.abs(this.x + this.width - otherBlock.x);
+
+    const minDistance = Math.min(
+      distanceToTop,
+      distanceToBottom,
+      distanceToLeft,
+      distanceToRight
+    );
+
+    switch (minDistance) {
+      case distanceToTop:
+        return this.getEdgeCenter("top");
+      case distanceToBottom:
+        return this.getEdgeCenter("bottom");
+      case distanceToLeft:
+        return this.getEdgeCenter("left");
+      default:
+        return this.getEdgeCenter("right");
+    }
+  }
+
   public getEdgeCenter(edge: EdgeType): [number, number] {
     switch (edge) {
       case "top":
