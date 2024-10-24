@@ -35,39 +35,18 @@ export class BoardBlocks {
     ];
   }
 
-  public findNearby(block: PuzzleBlock) {
-    const blocks: PuzzleBlock[] = [];
-
+  public findNearby(block: PuzzleBlock): PuzzleBlock[] {
     const { row, column } = block.gridIndices;
+    const directions = [
+      { row: row - 1, column },
+      { row: row + 1, column },
+      { row, column: column - 1 },
+      { row, column: column + 1 },
+    ];
 
-    if (0 < column) {
-      blocks.push(
-        this.blocks.find(({ gridIndices: { column: c } }) => c === column - 1)!
-      );
-    }
-
-    if (column < this.maxColumn) {
-      blocks.push(
-        this.blocks.find(({ gridIndices: { column: c } }) => c === column + 1)!
-      );
-    }
-
-    if (0 < row) {
-      blocks.push(
-        this.blocks.find(({ gridIndices: { row: r } }) => r === row - 1)!
-      );
-    }
-
-    if (row < this.maxRow) {
-      blocks.push(
-        this.blocks.find(({ gridIndices: { row: r } }) => r === row + 1)!
-      );
-    }
-
-    return blocks as
-      | [PuzzleBlock, PuzzleBlock]
-      | [PuzzleBlock, PuzzleBlock, PuzzleBlock]
-      | [PuzzleBlock, PuzzleBlock, PuzzleBlock, PuzzleBlock];
+    return directions
+      .map(({ row, column }) => this.getBlockByIndices(row, column))
+      .filter((block): block is PuzzleBlock => block !== null);
   }
 
   public getBlockByIndices(row: number, column: number): null | PuzzleBlock {
