@@ -58,25 +58,12 @@ export class PuzzleBlock {
 
     switch (minDistance) {
       case distanceToTop:
-        return this.getEdgeCenter("top");
-      case distanceToBottom:
-        return this.getEdgeCenter("bottom");
-      case distanceToLeft:
-        return this.getEdgeCenter("left");
-      default:
-        return this.getEdgeCenter("right");
-    }
-  }
-
-  public getEdgeCenter(edge: EdgeType): [number, number] {
-    switch (edge) {
-      case "top":
         return [this.x + this.width / 2, this.y];
-      case "bottom":
+      case distanceToBottom:
         return [this.x + this.width / 2, this.y + this.height];
-      case "left":
+      case distanceToLeft:
         return [this.x, this.y + this.height / 2];
-      case "right":
+      default:
         return [this.x + this.width, this.y + this.height / 2];
     }
   }
