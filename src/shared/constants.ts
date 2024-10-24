@@ -7,3 +7,6 @@ export const SELECTION_LINE_WIDTH = 4;
 
 export const BLOCK_MARGIN = 100;
 export const BLOCK_GAP = 50;
+
+export const SNAP_SOUND_URL =
+  "https://t1.daumcdn.net/cfile/tistory/998757405D28548234";

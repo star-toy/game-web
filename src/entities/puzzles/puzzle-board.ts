@@ -2,11 +2,13 @@ import { PuzzleBlock } from "./puzzle-block";
 import { BoardStates } from "./board-states";
 import { BoardSelections } from "./board-selections";
 import { BoardBlocks } from "./board-blocks";
+import { BoardMagnets } from "./board-magnets";
 
 export class PuzzleBoard {
   public readonly states = new BoardStates(this);
   public readonly selections = new BoardSelections(this);
   public readonly blocks = new BoardBlocks(this);
+  public readonly magnets = new BoardMagnets(this);
 
   constructor(public readonly image: HTMLImageElement) {}
 

@@ -125,6 +125,8 @@ class SingleSelectState implements State {
   }
 
   private handleInteractionEnd() {
+    this.board.magnets.snap(this.block);
+
     this.board.states.pop();
   }
 }
