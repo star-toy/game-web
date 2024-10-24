@@ -32,55 +32,30 @@ export class BoardMagnets {
   }
 
   private findSnapTarget(block: PuzzleBlock) {
-    return this.getPotentialTargets(block)
-      .map(({ targetBlock, sourceEdge, targetEdge }) => {
-        const sourcePoint = block.getEdgeCenter(sourceEdge);
-        const targetPoint = targetBlock!.getEdgeCenter(targetEdge);
+    return this.getPotentialTargets(block).reduce<null | SnapInfo>(
+      (closest, current) =>
+        closest == null || current.distance < closest.distance
+          ? current
+          : closest,
+      null as null | SnapInfo
+    );
+  }
+
+  private getPotentialTargets(block: PuzzleBlock) {
+    return this.board
+      .findNearby(block)
+      .map((targetBlock) => {
+        const sourcePoint = block.getNearestEdgeCenter(targetBlock);
+        const targetPoint = targetBlock.getNearestEdgeCenter(block);
 
         return {
-          block: targetBlock,
+          block,
           distance: this.calculateDistance(sourcePoint, targetPoint),
           sourcePoint,
           targetPoint,
         };
       })
-      .filter(({ distance }) => distance <= this.threshold)
-      .reduce<null | SnapInfo>((closest, current) => {
-        return closest == null || current.distance < closest.distance
-          ? current
-          : closest;
-      }, null);
-  }
-
-  private getPotentialTargets(block: PuzzleBlock) {
-    const { row, column } = block.gridIndices;
-
-    return [
-      {
-        targetBlock: this.board.getBlockByIndices(row - 1, column),
-        sourceEdge: "top" as const,
-        targetEdge: "bottom" as const,
-      },
-      {
-        targetBlock: this.board.getBlockByIndices(row + 1, column),
-        sourceEdge: "bottom" as const,
-        targetEdge: "top" as const,
-      },
-      {
-        targetBlock: this.board.getBlockByIndices(row, column - 1),
-        sourceEdge: "left" as const,
-        targetEdge: "right" as const,
-      },
-      {
-        targetBlock: this.board.getBlockByIndices(row, column + 1),
-        sourceEdge: "right" as const,
-        targetEdge: "left" as const,
-      },
-    ].filter(({ targetBlock }) => !!targetBlock) as {
-      targetBlock: PuzzleBlock;
-      sourceEdge: EdgeType;
-      targetEdge: EdgeType;
-    }[];
+      .filter(({ distance }) => distance <= this.threshold);
   }
 
   private adjustPosition(
