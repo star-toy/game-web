@@ -7,8 +7,8 @@ type EdgeType = "top" | "bottom" | "left" | "right";
 interface SnapInfo {
   block: PuzzleBlock;
   distance: number;
-  edge1: EdgeType;
-  edge2: EdgeType;
+  sourcePoint: [number, number];
+  targetPoint: [number, number];
 }
 
 export class BoardMagnets {
@@ -82,15 +82,14 @@ export class BoardMagnets {
       })
       .map(({ row: r, column: c, edge1, edge2 }) => {
         const targetBlock = this.board.getBlockByIndices(r, c)!;
+        const sourcePoint = block.edgeCenters[edge1];
+        const targetPoint = targetBlock.edgeCenters[edge2];
 
         return {
           block: targetBlock,
-          distance: this.calculateDistance(
-            block.edgeCenters[edge1],
-            targetBlock.edgeCenters[edge2]
-          ),
-          edge1,
-          edge2,
+          distance: this.calculateDistance(sourcePoint, targetPoint),
+          sourcePoint,
+          targetPoint,
         };
       });
 
@@ -103,27 +102,12 @@ export class BoardMagnets {
         });
   }
 
-  private adjustPosition(
-    block: PuzzleBlock,
-    { block: block2, edge2 }: SnapInfo
-  ) {
-    const { x: x2, y: y2 } = block2.position;
-    const { width: width2, height: height2 } = block2.dimensions;
+  private adjustPosition(block: PuzzleBlock, snapInfo: SnapInfo) {
+    const { sourcePoint, targetPoint } = snapInfo;
+    const dx = targetPoint[0] - sourcePoint[0];
+    const dy = targetPoint[1] - sourcePoint[1];
 
-    switch (edge2) {
-      case "left":
-        block.move(x2 - block.dimensions.width, y2);
-        break;
-      case "right":
-        block.move(x2 + width2, y2);
-        break;
-      case "top":
-        block.move(x2, y2 - block.dimensions.height);
-        break;
-      case "bottom":
-        block.move(x2, y2 + height2);
-        break;
-    }
+    block.move(block.position.x + dx, block.position.y + dy);
   }
 
   private playSnapSound() {
